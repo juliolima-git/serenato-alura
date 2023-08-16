@@ -1,3 +1,37 @@
+<?php
+
+use Serenatto\Web\Model\Product;
+
+    require_once 'vendor/autoload.php';
+
+    use Serenatto\Web\Repository\ProductRepository;
+    use Serenatto\Web\Infrastructure\Persistence\ConnectionCreator;
+
+    $productRepository = new ProductRepository(ConnectionCreator::createConnection());
+    
+      if(isset($_POST['editar'])) {
+        $product = new Product(
+            $_POST['id'],
+            $_POST['nome'],
+            $_POST['tipo'],
+            $_POST['descricao'],
+            $_POST['preco'],
+            uniqid().$_FILES['imagem']['name']
+        );
+
+        if($_FILES['imagem']['error'] == UPLOAD_ERR_OK) {
+          move_uploaded_file($_FILES['imagem']['tmp_name'], $product->getImagePath());
+      }
+
+        $productRepository->update($product);
+        header("Location: admin.php");
+
+      } else {
+        $product = $productRepository->getProductBy($_GET['id']);
+      }
+
+?>
+
 <!doctype html>
 <html lang="pt-br">
 <head>
@@ -24,30 +58,32 @@
     <img class= "ornaments" src="img/ornaments-coffee.png" alt="ornaments">
   </section>
   <section class="container-form">
-    <form action="#">
+    <form method="POST" enctype="multipart/form-data">
 
       <label for="nome">Nome</label>
-      <input type="text" id="nome" name="nome" placeholder="Digite o nome do produto" required>
+      <input value="<?= $product->getName() ?>" type="text" id="nome" name="nome" placeholder="Digite o nome do produto" required>
 
       <div class="container-radio">
         <div>
             <label for="cafe">Café</label>
-            <input type="radio" id="cafe" name="tipo" value="Café" checked>
+            <input type="radio" id="cafe" name="tipo" value="Café" <?= $product->getType() === 'Café' ? 'checked' : '' ?>>
         </div>
         <div>
             <label for="almoco">Almoço</label>
-            <input type="radio" id="almoco" name="tipo" value="Almoço">
+            <input type="radio" id="almoco" name="tipo" value="Almoço" <?= $product->getType() === 'Almoço' ? 'checked' : '' ?>>
         </div>
     </div>
 
       <label for="descricao">Descrição</label>
-      <input type="text" id="descricao" name="descricao" placeholder="Digite uma descrição" required>
+      <input value="<?= $product->getDescription() ?>" type="text" id="descricao" name="descricao" placeholder="Digite uma descrição" required>
 
       <label for="preco">Preço</label>
-      <input type="text" id="preco" name="preco" placeholder="Digite uma descrição" required>
+      <input value="<?= number_format($product->getPrice(), 2) ?>" type="text" id="preco" name="preco" placeholder="Digite uma descrição" required>
 
       <label for="imagem">Envie uma imagem do produto</label>
       <input type="file" name="imagem" accept="image/*" id="imagem" placeholder="Envie uma imagem">
+
+      <input type="hidden" name="id" value="<?= $product->getId()?>">
 
       <input type="submit" name="editar" class="botao-cadastrar"  value="Editar produto"/>
     </form>

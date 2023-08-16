@@ -1,5 +1,8 @@
 {
     "autoload": {
         "psr-4": {"Serenatto\\Web\\": "src/"}
+    },
+    "require": {
+        "dompdf/dompdf": "^2.0"
     }
 }

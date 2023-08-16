@@ -10,14 +10,14 @@ class Product {
     private string $image;
     private float $price;
 
-    public function __construct(?int $id, string $type, string $name, string $description, float $price, string $image)
+    public function __construct(?int $id, string $name, string $type, string $description, float $price, string $image)
     {
         $this->id = $id;
         $this->type = $type;
         $this->name = $name;
         $this->description = $description;
         $this->price = $price;
-        $this->image = $image;
+        $this->image = empty($image)  ? "logo-serenatto.png" : $image;
     }
  
     public function getPrice()
