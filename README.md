@@ -9,7 +9,7 @@ Esse projeto foi desenvolvido no curso da alura PHP e MySQL: criando sua primeir
 - Upload de imagens
 - Introdução do conceito de Repository Pattern
 - Utilização da Classe PDO
-- Utilização de um Criador de Conexão
+- Introdução do Static Creation Method
 
 # Requisitos
 - Ter um servidor mysql instalado
